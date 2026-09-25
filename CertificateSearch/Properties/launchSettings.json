@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "CertificateSearch (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "CertificateSearch (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
