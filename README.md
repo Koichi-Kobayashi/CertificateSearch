@@ -18,6 +18,7 @@ For development, open `CertificateSearch.slnx` in Visual Studio and deploy the *
 - Open the matching store and certificate in Windows Certificate Manager without navigating its tree manually.
 - Open a store separately, or copy a certificate's thumbprint, subject, or issuer from the context menu.
 - Refresh the list after certificates change outside the extension.
+- Show the extension interface in English or Japanese according to the Windows UI language.
 - Support x64 and ARM64 on Windows 10 version 2004 (build 19041) or later.
 
 ## Usage
@@ -83,6 +84,10 @@ The tests do not modify certificate stores. Interactive verification requires a 
 ### Diagnostics
 
 Debug and Release builds write stage-only navigation logs to `%LOCALAPPDATA%\CertificateSearch\navigation-YYYY-MM-DD.log`. The latest seven calendar days are retained; older logs are removed on the next write. Logs have no size limit and do not contain certificate subjects or thumbprints.
+
+### Microsoft Store package
+
+The package version is managed in `Directory.Build.props`. Run `./scripts/Build-StoreUpload.ps1` to synchronize the manifest and create the unsigned x64/ARM64 `.msixupload` for Partner Center. See the [Store release instructions](docs/StoreRelease.md).
 
 ## Contributing
 

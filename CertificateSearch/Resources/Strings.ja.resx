@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Extension.DisplayName" xml:space="preserve"><value>証明書検索</value></data>
+  <data name="Page.Search.Name" xml:space="preserve"><value>証明書を検索</value></data>
+  <data name="Page.Search.Placeholder" xml:space="preserve"><value>名前、発行者、拇印、シリアル番号、ストア名</value></data>
+  <data name="Status.Loading" xml:space="preserve"><value>証明書を読み込み中…</value></data>
+  <data name="Status.NoCertificates" xml:space="preserve"><value>証明書を読み込めませんでした</value></data>
+  <data name="Status.NoMatches" xml:space="preserve"><value>一致する証明書はありません</value></data>
+  <data name="Status.MoreMatches" xml:space="preserve"><value>ほかにも一致する証明書があります</value></data>
+  <data name="Status.MoreMatchesHint" xml:space="preserve"><value>名前や識別子を詳しく入力してください</value></data>
+  <data name="Command.Refresh.Title" xml:space="preserve"><value>証明書を再読み込み</value></data>
+  <data name="Command.Refresh.Subtitle" xml:space="preserve"><value>Windows の証明書ストアを読み込み直します</value></data>
+  <data name="Command.OpenCertificate" xml:space="preserve"><value>証明書を開く</value></data>
+  <data name="Command.OpenStore" xml:space="preserve"><value>証明書ストアを開く</value></data>
+  <data name="Command.CopyThumbprint" xml:space="preserve"><value>拇印をコピー</value></data>
+  <data name="Command.CopySubject" xml:space="preserve"><value>サブジェクトをコピー</value></data>
+  <data name="Command.CopyIssuer" xml:space="preserve"><value>発行者をコピー</value></data>
+  <data name="Error.CertificateManager" xml:space="preserve"><value>Windows の証明書マネージャーを開けませんでした。</value></data>
+  <data name="Details.Store" xml:space="preserve"><value>ストア</value></data>
+  <data name="Details.Subject" xml:space="preserve"><value>サブジェクト</value></data>
+  <data name="Details.Issuer" xml:space="preserve"><value>発行者</value></data>
+  <data name="Details.FriendlyName" xml:space="preserve"><value>フレンドリ名</value></data>
+  <data name="Details.Thumbprint" xml:space="preserve"><value>拇印</value></data>
+  <data name="Details.SerialNumber" xml:space="preserve"><value>シリアル番号</value></data>
+  <data name="Details.ValidFrom" xml:space="preserve"><value>有効期間の開始</value></data>
+  <data name="Details.ValidUntil" xml:space="preserve"><value>有効期間の終了</value></data>
+  <data name="Details.PrivateKeyPresent" xml:space="preserve"><value>秘密キー</value></data>
+  <data name="Value.Yes" xml:space="preserve"><value>あり</value></data>
+  <data name="Value.No" xml:space="preserve"><value>なし</value></data>
+  <data name="Validity.NotYetValid" xml:space="preserve"><value>有効期間前</value></data>
+  <data name="Validity.Expired" xml:space="preserve"><value>期限切れ</value></data>
+  <data name="Validity.ExpiresSoon" xml:space="preserve"><value>まもなく期限切れ</value></data>
+  <data name="Validity.Valid" xml:space="preserve"><value>有効</value></data>
+  <data name="Store.CurrentUser" xml:space="preserve"><value>現在のユーザー</value></data>
+  <data name="Store.LocalMachine" xml:space="preserve"><value>ローカル コンピューター</value></data>
+</root>

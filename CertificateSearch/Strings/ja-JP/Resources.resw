@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="AppDisplayName" xml:space="preserve"><value>証明書検索</value></data>
+  <data name="AppDescription" xml:space="preserve"><value>Windows の証明書を検索して、選択した証明書を開きます。</value></data>
+</root>

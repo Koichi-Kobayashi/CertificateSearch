@@ -18,12 +18,13 @@ Command Palette は Microsoft PowerToys に含まれる、キーボード中心�
 - MMC のツリーを手動でたどらず、該当ストアと証明書を証明書マネージャーで開けます。
 - コンテキスト メニューからストアだけを開いたり、拇印、サブジェクト、発行者をコピーしたりできます。
 - 拡張機能の外で証明書が変更された場合は、一覧を再読み込みできます。
+- Windows の表示言語に応じて、拡張機能の画面を英語または日本語で表示します。
 - Windows 10 version 2004（ビルド 19041）以降の x64 / ARM64 に対応しています。
 
 ## 使い方
 
 1. <kbd>Win</kbd>+<kbd>Alt</kbd>+<kbd>Space</kbd> で PowerToys Command Palette を開きます（ショートカットは PowerToys の設定で変更できます）。
-2. **Certificate Search** を選択します。
+2. **証明書検索**を選択します。
 3. 証明書名、発行者、拇印、シリアル番号、ストア名の一部を入力します。たとえば `DigiCert` や `Root` で検索できます。
 4. 検索結果を選びます。ローカル コンピューターの証明書では、Windows の UAC 確認を承認します。
 5. 証明書マネージャーで選択された証明書を確認します。ストアだけを開く場合や項目をコピーする場合は、コンテキスト メニューを使います。
@@ -34,7 +35,7 @@ Command Palette は Microsoft PowerToys に含まれる、キーボード中心�
 
 | 拡張機能を検索 | 証明書の一覧を表示 |
 | :---: | :---: |
-| [<img src="docs/images/ja-JP/01-find-extension.png" alt="Command Palette で Certificate Search を検索" width="460">](docs/images/ja-JP/01-find-extension.png) | [<img src="docs/images/ja-JP/02-certificate-list.png" alt="Command Palette で証明書の一覧を表示" width="460">](docs/images/ja-JP/02-certificate-list.png) |
+| [<img src="docs/images/ja-JP/01-find-extension.png" alt="Command Palette で証明書検索を検索" width="460">](docs/images/ja-JP/01-find-extension.png) | [<img src="docs/images/ja-JP/02-certificate-list.png" alt="Command Palette で証明書の一覧を表示" width="460">](docs/images/ja-JP/02-certificate-list.png) |
 | **証明書を絞り込み** | **選択した証明書を開く** |
 | [<img src="docs/images/ja-JP/03-filter-certificates.png" alt="Command Palette で証明書を絞り込み" width="460">](docs/images/ja-JP/03-filter-certificates.png) | [<img src="docs/images/ja-JP/04-open-certificate.png" alt="Windows の証明書マネージャーで選択された証明書" width="460">](docs/images/ja-JP/04-open-certificate.png) |
 
@@ -50,7 +51,7 @@ Command Palette は Microsoft PowerToys に含まれる、キーボード中心�
 
 ## 仕組み
 
-拡張機能は Windows の証明書 API で利用可能なストアを読み取り、ページを開いたときに検索用の一覧を作ります。**Refresh certificates** を選ぶと一覧を読み込み直します。ストアは読み取り専用で開き、1つのストアを読めなくてもほかのストアの読み込みは続けます。
+拡張機能は Windows の証明書 API で利用可能なストアを読み取り、ページを開いたときに検索用の一覧を作ります。**証明書を再読み込み**を選ぶと一覧を読み込み直します。ストアは読み取り専用で開き、1つのストアを読めなくてもほかのストアの読み込みは続けます。
 
 ローカル コンピューターの結果では、短時間だけ動作する管理者権限のヘルパーが証明書を再確認してから `certlm.msc` を開きます。現在のユーザーの結果では `certmgr.msc` を開きます。Windows の UI Automation でストア内の一覧を探し、一致する証明書が一意に特定できたときだけ行を選択します。マウス座標や画像認識は使いません。
 
@@ -83,6 +84,10 @@ dotnet run --project tests/CertificateSearch.Tests/CertificateSearch.Tests.cspro
 ### 診断ログ
 
 Debug と Release のどちらも、操作の進行状況だけを `%LOCALAPPDATA%\CertificateSearch\navigation-YYYY-MM-DD.log` に記録します。直近7日分を保持し、古いファイルは次の書き込み時に削除します。容量の上限はなく、証明書のサブジェクトや拇印は記録しません。
+
+### Microsoft Store 提出用パッケージ
+
+パッケージのバージョンは `Directory.Build.props` で管理します。`./scripts/Build-StoreUpload.ps1` を実行すると、マニフェストのバージョンを同期し、Partner Center に提出する x64/ARM64 の未署名 `.msixupload` を生成できます。詳しくは [Store リリース手順](docs/StoreRelease.md)を参照してください。
 
 ## コントリビューション
 

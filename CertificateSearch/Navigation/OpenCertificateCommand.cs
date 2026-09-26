@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using CertificateSearch.Certificates;
+using CertificateSearch.Resources;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
@@ -13,7 +14,7 @@ namespace CertificateSearch.Navigation;
 
 internal sealed partial class OpenCertificateCommand(CertificateEntry entry, bool selectCertificate, bool allowMetadataMatch = false) : InvokableCommand
 {
-    public override string Name => selectCertificate ? "Open certificate" : "Open certificate store";
+    public override string Name => Strings.Get(selectCertificate ? "Command.OpenCertificate" : "Command.OpenStore");
 
     public override ICommandResult Invoke()
     {
@@ -31,7 +32,7 @@ internal sealed partial class OpenCertificateCommand(CertificateEntry entry, boo
         }
         catch (Exception exception) when (exception is Win32Exception or InvalidOperationException or SecurityException)
         {
-            return CommandResult.ShowToast("Could not open Windows Certificate Manager.");
+            return CommandResult.ShowToast(Strings.Get("Error.CertificateManager"));
         }
     }
 }

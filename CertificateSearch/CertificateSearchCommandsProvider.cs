@@ -4,6 +4,7 @@
 
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using CertificateSearch.Resources;
 
 namespace CertificateSearch;
 
@@ -13,7 +14,7 @@ public partial class CertificateSearchCommandsProvider : CommandProvider
 
     public CertificateSearchCommandsProvider()
     {
-        DisplayName = "Certificate Search";
+        DisplayName = Strings.Get("Extension.DisplayName");
         Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
         _commands = [
             new CommandItem(new CertificateSearchPage()) { Title = DisplayName },

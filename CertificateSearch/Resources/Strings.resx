@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Extension.DisplayName" xml:space="preserve"><value>Certificate Search</value></data>
+  <data name="Page.Search.Name" xml:space="preserve"><value>Search certificates</value></data>
+  <data name="Page.Search.Placeholder" xml:space="preserve"><value>Name, issuer, thumbprint, serial number, or store</value></data>
+  <data name="Status.Loading" xml:space="preserve"><value>Loading certificates…</value></data>
+  <data name="Status.NoCertificates" xml:space="preserve"><value>No certificates loaded</value></data>
+  <data name="Status.NoMatches" xml:space="preserve"><value>No matching certificates</value></data>
+  <data name="Status.MoreMatches" xml:space="preserve"><value>More matches available</value></data>
+  <data name="Status.MoreMatchesHint" xml:space="preserve"><value>Type a more specific name or identifier</value></data>
+  <data name="Command.Refresh.Title" xml:space="preserve"><value>Refresh certificates</value></data>
+  <data name="Command.Refresh.Subtitle" xml:space="preserve"><value>Reload Windows certificate stores</value></data>
+  <data name="Command.OpenCertificate" xml:space="preserve"><value>Open certificate</value></data>
+  <data name="Command.OpenStore" xml:space="preserve"><value>Open certificate store</value></data>
+  <data name="Command.CopyThumbprint" xml:space="preserve"><value>Copy thumbprint</value></data>
+  <data name="Command.CopySubject" xml:space="preserve"><value>Copy subject</value></data>
+  <data name="Command.CopyIssuer" xml:space="preserve"><value>Copy issuer</value></data>
+  <data name="Error.CertificateManager" xml:space="preserve"><value>Could not open Windows Certificate Manager.</value></data>
+  <data name="Details.Store" xml:space="preserve"><value>Store</value></data>
+  <data name="Details.Subject" xml:space="preserve"><value>Subject</value></data>
+  <data name="Details.Issuer" xml:space="preserve"><value>Issuer</value></data>
+  <data name="Details.FriendlyName" xml:space="preserve"><value>Friendly name</value></data>
+  <data name="Details.Thumbprint" xml:space="preserve"><value>Thumbprint</value></data>
+  <data name="Details.SerialNumber" xml:space="preserve"><value>Serial number</value></data>
+  <data name="Details.ValidFrom" xml:space="preserve"><value>Valid from</value></data>
+  <data name="Details.ValidUntil" xml:space="preserve"><value>Valid until</value></data>
+  <data name="Details.PrivateKeyPresent" xml:space="preserve"><value>Private key present</value></data>
+  <data name="Value.Yes" xml:space="preserve"><value>Yes</value></data>
+  <data name="Value.No" xml:space="preserve"><value>No</value></data>
+  <data name="Validity.NotYetValid" xml:space="preserve"><value>Not yet valid</value></data>
+  <data name="Validity.Expired" xml:space="preserve"><value>Expired</value></data>
+  <data name="Validity.ExpiresSoon" xml:space="preserve"><value>Expires soon</value></data>
+  <data name="Validity.Valid" xml:space="preserve"><value>Valid</value></data>
+  <data name="Store.CurrentUser" xml:space="preserve"><value>Current User</value></data>
+  <data name="Store.LocalMachine" xml:space="preserve"><value>Local Computer</value></data>
+</root>
