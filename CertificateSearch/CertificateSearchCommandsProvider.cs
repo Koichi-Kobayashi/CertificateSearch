@@ -16,8 +16,13 @@ public partial class CertificateSearchCommandsProvider : CommandProvider
     {
         DisplayName = Strings.Get("Extension.DisplayName");
         Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
+        var searchPage = new CertificateSearchPage();
         _commands = [
-            new CommandItem(new CertificateSearchPage()) { Title = DisplayName },
+            new ListItem(searchPage)
+            {
+                Title = Strings.Get("Command.SearchCertificates.Title"),
+                Subtitle = Strings.Get("Command.SearchCertificates.Subtitle"),
+            },
         ];
     }
 
