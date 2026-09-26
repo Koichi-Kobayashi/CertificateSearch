@@ -152,7 +152,7 @@ internal static class CertificateManagerNavigator
     {
         var localizedName = StoreDisplayName.GetLocalizedName(storeName);
         var stopwatch = Stopwatch.StartNew();
-        var lastTreeCount = -1;
+        var treeFound = false;
         var transientFailures = 0;
         while (stopwatch.ElapsedMilliseconds < TimeoutMilliseconds)
         {
@@ -179,21 +179,17 @@ internal static class CertificateManagerNavigator
                     continue;
                 }
 
-                var trees = window.FindAll(TreeScope.Descendants,
-                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Tree))
-                    .Cast<AutomationElement>()
-                    .GroupBy(RuntimeId)
-                    .Select(group => group.First())
-                    .ToArray();
-                if (trees.Length != lastTreeCount)
+                var tree = window.FindFirst(TreeScope.Descendants,
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Tree));
+                if (tree is not null && !treeFound)
                 {
-                    lastTreeCount = trees.Length;
-                    NavigationDiagnostics.Write($"Navigator: discovered {trees.Length} UIA trees");
+                    treeFound = true;
+                    NavigationDiagnostics.Write("Navigator: MMC navigation tree found");
                 }
 
                 // MMC stores are immediate children of the console root. Searching
-                // the whole window is expensive and can return repeated UIA nodes.
-                foreach (AutomationElement tree in trees)
+                // the whole window for all matches is expensive in UI Automation.
+                if (tree is not null)
                 {
                     var roots = tree.FindAll(TreeScope.Children,
                         new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TreeItem));
@@ -237,7 +233,7 @@ internal static class CertificateManagerNavigator
             Thread.Sleep(PollMilliseconds);
         }
 
-        NavigationDiagnostics.Write($"Navigator: store discovery timed out; UIA trees={lastTreeCount}; transient failures={transientFailures}");
+        NavigationDiagnostics.Write($"Navigator: store discovery timed out; navigation tree found={treeFound}; transient failures={transientFailures}");
         return null;
     }
 
