@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\CertificateSearch\Certificates\CertificateEntry.cs" Link="CertificateEntry.cs" />
+    <Compile Include="..\..\CertificateSearch\Certificates\CertificateSearchIndex.cs" Link="CertificateSearchIndex.cs" />
+    <Compile Include="..\..\CertificateSearch\Certificates\CertificateStoreReader.cs" Link="CertificateStoreReader.cs" />
+    <Compile Include="..\..\CertificateSearch\Certificates\CertificateRowMatcher.cs" Link="CertificateRowMatcher.cs" />
+    <Compile Include="..\..\CertificateSearch\Navigation\StoreDisplayName.cs" Link="StoreDisplayName.cs" />
+    <Compile Include="..\..\CertificateSearch\Navigation\CertificateHelperProtocol.cs" Link="CertificateHelperProtocol.cs" />
+  </ItemGroup>
+</Project>
