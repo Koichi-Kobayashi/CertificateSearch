@@ -55,6 +55,12 @@ The extension reads available stores with the Windows certificate APIs and build
 
 For a Local Computer result, a short-lived elevated helper verifies the selected certificate again before opening `certlm.msc`. Current User results open in `certmgr.msc`. Windows UI Automation finds the store's certificate list and selects a row only when it can identify one matching certificate. The extension does not use mouse coordinates or image recognition.
 
+## Documentation
+
+- [Localization](docs/Localization.md)
+- [Microsoft Store release process](docs/StoreRelease.md)
+- [Privacy policy](docs/PrivacyPolicy.md)
+
 ## Development
 
 ### Prerequisites

@@ -55,6 +55,12 @@ Command Palette は Microsoft PowerToys に含まれる、キーボード中心�
 
 ローカル コンピューターの結果では、短時間だけ動作する管理者権限のヘルパーが証明書を再確認してから `certlm.msc` を開きます。現在のユーザーの結果では `certmgr.msc` を開きます。Windows の UI Automation でストア内の一覧を探し、一致する証明書が一意に特定できたときだけ行を選択します。マウス座標や画像認識は使いません。
 
+## ドキュメント
+
+- [ローカライズ](docs/Localization.md)
+- [Microsoft Store リリース手順](docs/StoreRelease.md)
+- [プライバシー ポリシー](docs/PrivacyPolicy.md)
+
 ## 開発
 
 ### 必要な環境
