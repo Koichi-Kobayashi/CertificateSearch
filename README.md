@@ -8,7 +8,7 @@ Press **Enter** to open `certmgr.msc` for Current User or `certlm.msc` for Local
 
 The context menu provides **Open certificate store**, **Copy thumbprint**, **Copy subject**, and **Copy issuer**. The extension opens stores read-only and never installs, deletes, exports, or changes certificate trust or private keys. A failure to read one store is logged and does not stop other stores from loading.
 
-Debug builds write stage-only diagnostics to `%LOCALAPPDATA%\CertificateSearch\navigation.log`. Release builds do not write this log. In Debug builds, the log is reset after reaching 1 MiB. It does not include certificate subjects or thumbprints.
+Debug and Release builds both write stage-only diagnostics to daily files named `%LOCALAPPDATA%\CertificateSearch\navigation-YYYY-MM-DD.log`. They retain seven calendar days, removing older daily files on the next write. The former undated `navigation.log` is also removed once its last write is older than the retention period. Logs have no size limit and do not include certificate subjects or thumbprints.
 
 ## Build and test
 
