@@ -72,6 +72,8 @@ Check(!CertificateRowMatcher.MatchesVisibleMetadata(
 Check(index.CanMatchByVisibleMetadata(named), "distinct issuer permits metadata match");
 Check(!new CertificateSearchIndex([named, named with { Thumbprint = "11223344" }])
     .CanMatchByVisibleMetadata(named), "same visible identity is ambiguous");
+Check(!new CertificateSearchIndex([named, named with { Subject = "CN=Localhost, O=Other", Issuer = "CN=IssuerCorp, O=Other", Thumbprint = "11223344" }])
+    .CanMatchByVisibleMetadata(named), "different distinguished names with the same visible identity are ambiguous");
 string[][] rows = [["Other", "IssuerCorp", named.NotAfter.ToShortDateString()],
     ["Localhost", "IssuerCorp", named.NotAfter.ToShortDateString()]];
 Check(CertificateRowMatcher.FindMatchingRows(rows, named, true).SequenceEqual([1]), "unique visible row selected");
@@ -83,9 +85,11 @@ Check(!string.IsNullOrWhiteSpace(localizedMy), "Windows provides localized store
 Console.WriteLine($"Localized My store: {localizedMy}");
 Check(CertificateHelperProtocol.IsValidPipeName($"CertificateSearch.{Guid.NewGuid():N}"), "valid helper pipe name");
 Check(!CertificateHelperProtocol.IsValidPipeName("CertificateSearch.bad"), "invalid helper pipe rejected");
-Check(CertificateHelperProtocol.IsValidRequest("Dell Trust", new string('A', 40), "1"), "valid helper request");
-Check(!CertificateHelperProtocol.IsValidRequest("Dell Trust\nRoot", new string('A', 40), "1"), "injected store name rejected");
-Check(!CertificateHelperProtocol.IsValidRequest("Dell Trust", "not-a-thumbprint", "1"), "invalid thumbprint rejected");
+Check(CertificateHelperProtocol.IsValidRequest("CurrentUser", "S-1-5-21-1", "My", new string('A', 40), "1"), "valid Current User helper request");
+Check(CertificateHelperProtocol.IsValidRequest("LocalMachine", "S-1-5-21-1", "Dell Trust", new string('A', 40), "1"), "valid Local Machine helper request");
+Check(!CertificateHelperProtocol.IsValidRequest("Unknown", "S-1-5-21-1", "My", new string('A', 40), "1"), "unknown store location rejected");
+Check(!CertificateHelperProtocol.IsValidRequest("CurrentUser", "S-1-5-21-1", "Dell Trust\nRoot", new string('A', 40), "1"), "injected store name rejected");
+Check(!CertificateHelperProtocol.IsValidRequest("CurrentUser", "S-1-5-21-1", "Dell Trust", "not-a-thumbprint", "1"), "invalid thumbprint rejected");
 
 if (args.Contains("--smoke", StringComparer.OrdinalIgnoreCase))
 {

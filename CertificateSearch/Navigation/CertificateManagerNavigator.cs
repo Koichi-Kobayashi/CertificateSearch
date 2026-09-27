@@ -63,12 +63,16 @@ internal static class CertificateManagerNavigator
     private static Process Start(StoreLocation location)
     {
         var console = location == StoreLocation.LocalMachine ? "certlm.msc" : "certmgr.msc";
-        return Process.Start(new ProcessStartInfo
+        var startInfo = new ProcessStartInfo
         {
             FileName = Path.Combine(Environment.SystemDirectory, "mmc.exe"),
             Arguments = $"\"{Path.Combine(Environment.SystemDirectory, console)}\"",
-            UseShellExecute = true,
-        }) ?? throw new InvalidOperationException("Certificate manager could not be started.");
+            // Shell execution can elevate certmgr.msc even when no UAC prompt is
+            // shown. A direct launch keeps Current User MMC at our integrity level.
+            UseShellExecute = location == StoreLocation.LocalMachine,
+        };
+
+        return Process.Start(startInfo) ?? throw new InvalidOperationException("Certificate manager could not be started.");
     }
 
     private static void Navigate(Process process, CertificateEntry entry, bool selectCertificate, bool allowMetadataMatch)
@@ -86,6 +90,7 @@ internal static class CertificateManagerNavigator
                 }
 
                 NavigationDiagnostics.Write("Navigator: MMC main window available");
+                BringToFront(window);
 
                 for (var attempt = 0; attempt < 5; attempt++)
                 {
@@ -136,10 +141,15 @@ internal static class CertificateManagerNavigator
     {
         for (var elapsed = 0; elapsed < TimeoutMilliseconds; elapsed += PollMilliseconds)
         {
-            process.Refresh();
-            if (process.MainWindowHandle != IntPtr.Zero)
+            if (process.HasExited)
             {
-                return AutomationElement.FromHandle(process.MainWindowHandle);
+                return null;
+            }
+
+            var window = FindMmcWindow(process);
+            if (window is not null)
+            {
+                return window;
             }
 
             Thread.Sleep(PollMilliseconds);
@@ -147,6 +157,52 @@ internal static class CertificateManagerNavigator
 
         return null;
     }
+
+    private static AutomationElement? FindMmcWindow(Process process)
+    {
+        // MainWindowHandle can point to MMC's separate UAC Input Indicator pane.
+        // Select the actual console frame among this process's top-level windows.
+        var windows = AutomationElement.RootElement.FindAll(TreeScope.Children,
+            new PropertyCondition(AutomationElement.ProcessIdProperty, process.Id));
+        return windows.Cast<AutomationElement>().FirstOrDefault(window =>
+            string.Equals(window.Current.ClassName, "MMCMainFrame", StringComparison.Ordinal));
+    }
+
+    private static void BringToFront(AutomationElement window)
+    {
+        var handle = new IntPtr(window.Current.NativeWindowHandle);
+        if (handle == IntPtr.Zero)
+        {
+            NavigationDiagnostics.Write("Navigator: MMC frame has no native window handle");
+            return;
+        }
+
+        const uint showWithoutMovingOrResizing = 0x0040 | 0x0001 | 0x0002;
+        var raised = SetWindowPos(handle, IntPtr.Zero, 0, 0, 0, 0, showWithoutMovingOrResizing);
+        var focused = SetForegroundWindow(handle);
+        if (!focused)
+        {
+            try
+            {
+                window.SetFocus();
+            }
+            catch (Exception exception) when (exception is ElementNotAvailableException or COMException or InvalidOperationException)
+            {
+                NavigationDiagnostics.Write($"Navigator: MMC focus fallback failed ({exception.GetType().Name}, 0x{exception.HResult:X8})");
+            }
+        }
+
+        NavigationDiagnostics.Write($"Navigator: MMC raised={raised}; foreground requested={focused}; active={GetForegroundWindow() == handle}");
+    }
+
+    [DllImport("user32.dll")]
+    private static extern bool SetWindowPos(IntPtr window, IntPtr insertAfter, int x, int y, int width, int height, uint flags);
+
+    [DllImport("user32.dll")]
+    private static extern bool SetForegroundWindow(IntPtr window);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetForegroundWindow();
 
     private static AutomationElement? WaitForStore(Process process, string storeName)
     {
@@ -158,21 +214,13 @@ internal static class CertificateManagerNavigator
         {
             try
             {
-                process.Refresh();
                 if (process.HasExited)
                 {
                     NavigationDiagnostics.Write("Navigator: launched MMC process exited before store discovery");
                     return null;
                 }
 
-                var handle = process.MainWindowHandle;
-                if (handle == IntPtr.Zero)
-                {
-                    Thread.Sleep(PollMilliseconds);
-                    continue;
-                }
-
-                var window = AutomationElement.FromHandle(handle);
+                var window = FindMmcWindow(process);
                 if (window is null)
                 {
                     Thread.Sleep(PollMilliseconds);
@@ -287,11 +335,9 @@ internal static class CertificateManagerNavigator
         {
             try
             {
-                process.Refresh();
-                var handle = process.MainWindowHandle;
-                if (handle != IntPtr.Zero)
+                var window = FindMmcWindow(process);
+                if (window is not null)
                 {
-                    var window = AutomationElement.FromHandle(handle);
                     var list = window.FindFirst(TreeScope.Descendants,
                         new OrCondition(
                             new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.List),
@@ -311,8 +357,51 @@ internal static class CertificateManagerNavigator
                         .GroupBy(RuntimeId)
                         .Select(group => group.First())
                         .ToArray();
+                    var rowNames = rowElements.Select(row => row.Current.Name).ToArray();
+                    var matchesByName = CertificateRowMatcher.FindMatchingRows(
+                        rowNames.Select(name => new[] { name }).ToArray(), entry, allowMetadataMatch);
+                    if (matchesByName.Length == 1)
+                    {
+                        NavigationDiagnostics.Write("Navigator: unique certificate row found by row name");
+                        SelectAndOpen(rowElements[matchesByName[0]]);
+                        return;
+                    }
+
+                    if (allowMetadataMatch && !string.IsNullOrWhiteSpace(entry.CommonName))
+                    {
+                        var candidateIndexes = Enumerable.Range(0, rowElements.Length)
+                            .Where(index => rowNames[index].Contains(entry.CommonName, StringComparison.OrdinalIgnoreCase))
+                            .ToArray();
+                        if (candidateIndexes.Length > 0 && candidateIndexes.Length < rowElements.Length)
+                        {
+                            var candidateMatches = CertificateRowMatcher.FindMatchingRows(
+                                candidateIndexes.Select(index => RowFields(rowElements[index], TreeScope.Children)).ToArray(),
+                                entry, true);
+                            if (candidateMatches.Length == 1)
+                            {
+                                NavigationDiagnostics.Write($"Navigator: unique certificate row found among {candidateIndexes.Length} candidates");
+                                SelectAndOpen(rowElements[candidateIndexes[candidateMatches[0]]]);
+                                return;
+                            }
+                        }
+                    }
+
+                    if (allowMetadataMatch)
+                    {
+                        var shallowMatches = CertificateRowMatcher.FindMatchingRows(
+                            rowElements.Select(row => RowFields(row, TreeScope.Children)).ToArray(),
+                            entry, true);
+                        if (shallowMatches.Length == 1)
+                        {
+                            NavigationDiagnostics.Write("Navigator: unique certificate row found in direct child fields");
+                            SelectAndOpen(rowElements[shallowMatches[0]]);
+                            return;
+                        }
+                    }
+
                     var matches = CertificateRowMatcher.FindMatchingRows(
-                        rowElements.Select(RowFields).ToArray(), entry, allowMetadataMatch);
+                        rowElements.Select(row => RowFields(row, TreeScope.Descendants)).ToArray(),
+                        entry, allowMetadataMatch);
                     if (matches.Length == 1)
                     {
                         NavigationDiagnostics.Write("Navigator: unique certificate row found");
@@ -354,9 +443,9 @@ internal static class CertificateManagerNavigator
         }
     }
 
-    private static string[] RowFields(AutomationElement row)
+    private static string[] RowFields(AutomationElement row, TreeScope scope)
     {
-        var children = row.FindAll(TreeScope.Descendants, Condition.TrueCondition);
+        var children = row.FindAll(scope, Condition.TrueCondition);
         return new[] { row.Current.Name }.Concat(children.Cast<AutomationElement>().Select(x => x.Current.Name)).ToArray();
     }
 }

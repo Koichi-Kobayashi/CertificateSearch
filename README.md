@@ -26,7 +26,7 @@ For development, open `CertificateSearch.slnx` in Visual Studio and deploy the *
 1. Open PowerToys Command Palette with <kbd>Win</kbd>+<kbd>Alt</kbd>+<kbd>Space</kbd> (the shortcut can be changed in PowerToys settings).
 2. Select **Certificate Search**.
 3. Enter part of a certificate name, issuer, thumbprint, serial number, or store name—for example, `DigiCert` or `Root`.
-4. Select a result. For a Local Computer certificate, approve the Windows UAC prompt.
+4. Select a result. If Windows requests UAC approval to open Certificate Manager, approve the prompt.
 5. Review the selected certificate in Windows Certificate Manager. Use the context menu if you only want to open its store or copy a field.
 
 The extension reads certificate stores without changing certificates, trust settings, or private keys. If Windows does not expose a unique matching row to UI Automation, Certificate Manager opens at the store without selecting a certificate.
@@ -47,13 +47,13 @@ The four screenshots are planned and will be added later.
 - [Microsoft PowerToys](https://learn.microsoft.com/windows/powertoys/install) with Command Palette enabled
 - Windows Certificate Manager (`certmgr.msc` and `certlm.msc`)
 
-Access to individual stores can depend on Windows permissions. Opening a Local Computer certificate requires UAC approval; searching and listing certificates do not.
+Access to individual stores can depend on Windows permissions. Opening a Local Computer certificate requires UAC approval. Some Windows configurations also require approval when opening a Current User certificate; searching and listing certificates do not.
 
 ## How it works
 
 The extension reads available stores with the Windows certificate APIs and builds a search index when its page opens. **Refresh certificates** reloads that index. Store reads are read-only, and a failure in one store does not stop the others from loading.
 
-For a Local Computer result, a short-lived elevated helper verifies the selected certificate again before opening `certlm.msc`. Current User results open in `certmgr.msc`. Windows UI Automation finds the store's certificate list and selects a row only when it can identify one matching certificate. The extension does not use mouse coordinates or image recognition.
+For a Local Computer result, a short-lived elevated helper verifies the selected certificate again before opening `certlm.msc`. Current User results open in `certmgr.msc`; if Windows requires elevation to start MMC, the helper verifies the certificate under the same user account first. Windows UI Automation finds the store's certificate list and selects a row only when it can identify one matching certificate. The extension does not use mouse coordinates or image recognition.
 
 ## Documentation
 

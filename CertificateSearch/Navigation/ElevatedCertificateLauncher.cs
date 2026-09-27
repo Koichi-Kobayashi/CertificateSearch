@@ -5,26 +5,30 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using CertificateSearch.Certificates;
 
 namespace CertificateSearch.Navigation;
 
-/// <summary>Starts the packaged executable with the same integrity level as certlm.msc.</summary>
+/// <summary>Starts the packaged executable at the integrity level required by MMC.</summary>
 internal static class ElevatedCertificateLauncher
 {
     private const int ConnectionTimeoutMilliseconds = 60000;
 
     public static void Start(CertificateEntry entry, bool selectCertificate)
     {
+        using var identity = WindowsIdentity.GetCurrent();
+        var requestingUserSid = identity.User?.Value ??
+            throw new InvalidOperationException("The requesting Windows user is unavailable.");
         var pipeName = $"{CertificateHelperProtocol.PipePrefix}{Guid.NewGuid():N}";
         NavigationDiagnostics.Write("Launcher: creating request pipe");
         var server = new NamedPipeServerStream(
             pipeName, PipeDirection.Out, 1, PipeTransmissionMode.Byte,
             PipeOptions.Asynchronous);
         var cancellation = new CancellationTokenSource(ConnectionTimeoutMilliseconds);
-        _ = SendRequestAsync(server, cancellation, entry, selectCertificate);
+        _ = SendRequestAsync(server, cancellation, entry, selectCertificate, requestingUserSid);
 
         try
         {
@@ -56,13 +60,16 @@ internal static class ElevatedCertificateLauncher
         NamedPipeServerStream server,
         CancellationTokenSource cancellation,
         CertificateEntry entry,
-        bool selectCertificate)
+        bool selectCertificate,
+        string requestingUserSid)
     {
         try
         {
             await server.WaitForConnectionAsync(cancellation.Token).ConfigureAwait(false);
             NavigationDiagnostics.Write("Launcher: helper connected");
             await using var writer = new StreamWriter(server, leaveOpen: true) { AutoFlush = true };
+            await writer.WriteLineAsync(entry.StoreLocation.ToString()).ConfigureAwait(false);
+            await writer.WriteLineAsync(requestingUserSid).ConfigureAwait(false);
             await writer.WriteLineAsync(entry.StoreName).ConfigureAwait(false);
             await writer.WriteLineAsync(entry.Thumbprint).ConfigureAwait(false);
             await writer.WriteLineAsync(selectCertificate ? "1" : "0").ConfigureAwait(false);

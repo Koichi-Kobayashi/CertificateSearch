@@ -12,8 +12,8 @@ internal sealed class CertificateSearchIndex(IReadOnlyList<CertificateEntry> ent
     public bool CanMatchByVisibleMetadata(CertificateEntry entry) => entries.Count(other =>
         other.StoreLocation == entry.StoreLocation &&
         string.Equals(other.StoreName, entry.StoreName, StringComparison.OrdinalIgnoreCase) &&
-        string.Equals(other.Subject, entry.Subject, StringComparison.OrdinalIgnoreCase) &&
-        string.Equals(other.Issuer, entry.Issuer, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(other.CommonName, entry.CommonName, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(other.IssuerName, entry.IssuerName, StringComparison.OrdinalIgnoreCase) &&
         other.NotAfter.Date == entry.NotAfter.Date) == 1;
 
     public IReadOnlyList<CertificateEntry> Search(string? query)

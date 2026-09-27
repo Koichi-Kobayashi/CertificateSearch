@@ -10,6 +10,7 @@ using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
 using CertificateSearch.Certificates;
 
 namespace CertificateSearch.Navigation;
@@ -43,16 +44,26 @@ internal static class ElevatedCertificateHelper
             client.Connect(ConnectionTimeoutMilliseconds);
             NavigationDiagnostics.Write("Helper: connected to request pipe");
             using var reader = new StreamReader(client);
+            var locationText = reader.ReadLine();
+            var requestingUserSid = reader.ReadLine();
             var storeName = reader.ReadLine();
             var thumbprint = reader.ReadLine();
             var selectFlag = reader.ReadLine();
-            if (!CertificateHelperProtocol.IsValidRequest(storeName, thumbprint, selectFlag))
+            if (!CertificateHelperProtocol.IsValidRequest(locationText, requestingUserSid, storeName, thumbprint, selectFlag))
             {
                 NavigationDiagnostics.Write("Helper: request validation failed");
                 return;
             }
 
-            var entries = CertificateStoreReader.ReadStore(StoreLocation.LocalMachine, storeName!);
+            var location = Enum.Parse<StoreLocation>(locationText!);
+            if (location == StoreLocation.CurrentUser &&
+                !string.Equals(requestingUserSid, WindowsIdentity.GetCurrent().User?.Value, StringComparison.OrdinalIgnoreCase))
+            {
+                NavigationDiagnostics.Write("Helper: Current User identity differs after elevation");
+                return;
+            }
+
+            var entries = CertificateStoreReader.ReadStore(location, storeName!);
             NavigationDiagnostics.Write($"Helper: read {entries.Count} certificates from requested store");
             var matches = entries.Where(entry =>
                 string.Equals(entry.Thumbprint, thumbprint, StringComparison.OrdinalIgnoreCase)).ToArray();

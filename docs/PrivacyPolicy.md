@@ -24,7 +24,7 @@ Logs record navigation stages, timestamps, process IDs, and details such as exce
 
 ## Certificate store access
 
-Certificate stores are accessed for reading. The extension does not modify certificates, trust settings, or private keys. Windows may request UAC approval when opening Certificate Manager for the Local Computer store.
+Certificate stores are accessed for reading. The extension does not modify certificates, trust settings, or private keys. Windows requests UAC approval when opening Certificate Manager for the Local Computer store and may also request it for the Current User store on systems where MMC requires elevation.
 
 ## Changes to this policy
 

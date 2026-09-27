@@ -14,7 +14,10 @@ internal static class CertificateHelperProtocol
         pipeName.StartsWith(PipePrefix, StringComparison.Ordinal) &&
         Guid.TryParseExact(pipeName[PipePrefix.Length..], "N", out _);
 
-    public static bool IsValidRequest(string? storeName, string? thumbprint, string? selectFlag) =>
+    public static bool IsValidRequest(string? location, string? userSid, string? storeName, string? thumbprint, string? selectFlag) =>
+        (location is "CurrentUser" or "LocalMachine") &&
+        !string.IsNullOrWhiteSpace(userSid) && userSid.Length <= 256 &&
+        !userSid.Any(char.IsControl) &&
         !string.IsNullOrWhiteSpace(storeName) && storeName.Length <= 256 &&
         !storeName.Any(char.IsControl) &&
         !string.IsNullOrEmpty(thumbprint) && thumbprint.Length is 40 or 64 &&

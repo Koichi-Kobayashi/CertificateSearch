@@ -26,12 +26,24 @@ internal sealed partial class OpenCertificateCommand(CertificateEntry entry, boo
             }
             else
             {
-                CertificateManagerNavigator.Open(entry, selectCertificate, allowMetadataMatch);
+                try
+                {
+                    CertificateManagerNavigator.Open(entry, selectCertificate, allowMetadataMatch);
+                }
+                catch (Win32Exception exception) when (
+                    entry.StoreLocation == StoreLocation.CurrentUser &&
+                    !ProcessIntegrity.IsElevated &&
+                    exception.NativeErrorCode == 740)
+                {
+                    NavigationDiagnostics.Write("Command: Current User MMC requires elevation; starting helper");
+                    ElevatedCertificateLauncher.Start(entry, selectCertificate);
+                }
             }
             return CommandResult.Hide();
         }
         catch (Exception exception) when (exception is Win32Exception or InvalidOperationException or SecurityException)
         {
+            NavigationDiagnostics.Write($"Command: certificate manager launch failed ({exception.GetType().Name}, 0x{exception.HResult:X8})");
             return CommandResult.ShowToast(Strings.Get("Error.CertificateManager"));
         }
     }
