@@ -8,7 +8,7 @@ Command Palette is a keyboard-first launcher included with Microsoft PowerToys. 
 
 ## Installation
 
-For development, open `CertificateSearch.slnx` in Visual Studio and deploy the **CertificateSearch (Package)** profile. Select x64 or ARM64 to match your Windows device. See [Build and test](#build-and-test) for command-line verification.
+Install **Certificate Search for Command Palette** from the [Microsoft Store](https://apps.microsoft.com/detail/9nbhhrz7drvn). Microsoft PowerToys with Command Palette enabled is required.
 
 ## Features
 
@@ -69,6 +69,8 @@ For a Local Computer result, a short-lived elevated helper verifies the selected
 - Visual Studio with Windows application and MSIX tooling when deploying the extension
 
 ### Build and test
+
+For local development, open `CertificateSearch.slnx` in Visual Studio and deploy the **CertificateSearch (Package)** profile. Select x64 or ARM64 to match your Windows device.
 
 From the repository root:
 

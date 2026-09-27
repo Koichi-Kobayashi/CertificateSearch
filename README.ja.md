@@ -8,7 +8,7 @@ Command Palette は Microsoft PowerToys に含まれる、キーボード中心�
 
 ## インストール
 
-開発用には、Visual Studio で `CertificateSearch.slnx` を開き、**CertificateSearch (Package)** プロファイルで配置します。Windows デバイスに合わせて x64 または ARM64 を選んでください。コマンドラインでの確認方法は[ビルドとテスト](#ビルドとテスト)を参照してください。
+**Certificate Search for Command Palette** は[Microsoft Store](https://apps.microsoft.com/detail/9nbhhrz7drvn)からインストールできます。Microsoft PowerToys の Command Palette を有効にして使用してください。
 
 ## 主な機能
 
@@ -69,6 +69,8 @@ Command Palette は Microsoft PowerToys に含まれる、キーボード中心�
 - 拡張機能を配置する場合は、Windows アプリケーション開発と MSIX ツールを含む Visual Studio
 
 ### ビルドとテスト
+
+ローカルで開発する場合は、Visual Studio で `CertificateSearch.slnx` を開き、**CertificateSearch (Package)** プロファイルで配置します。Windows デバイスに合わせて x64 または ARM64 を選んでください。
 
 リポジトリのルートで実行します。
 
