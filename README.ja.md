@@ -102,4 +102,4 @@ Issue と Pull Request を歓迎します。証明書検索や MMC への移動�
 
 ## ライセンス
 
-新規作成したソース ファイルには MIT License の表記があります。Command Palette のテンプレート由来のファイルには、元のライセンス表記を残しています。
+このプロジェクトは [MIT License](LICENSE) のもとで公開されています。

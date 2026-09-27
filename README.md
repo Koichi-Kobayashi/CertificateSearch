@@ -102,4 +102,4 @@ Issues and pull requests are welcome. Please verify changes to certificate searc
 
 ## License
 
-New source files carry the MIT License notice. Files from the Command Palette template retain their existing license notices.
+This project is licensed under the [MIT License](LICENSE).
