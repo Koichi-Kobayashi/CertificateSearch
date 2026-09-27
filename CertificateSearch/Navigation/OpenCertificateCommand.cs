@@ -12,7 +12,7 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace CertificateSearch.Navigation;
 
-internal sealed partial class OpenCertificateCommand(CertificateEntry entry, bool selectCertificate, bool allowMetadataMatch = false) : InvokableCommand
+internal sealed partial class OpenCertificateCommand(CertificateEntry entry, bool selectCertificate, bool allowMetadataMatch = false, Action? onOpened = null) : InvokableCommand
 {
     public override string Name => Strings.Get(selectCertificate ? "Command.OpenCertificate" : "Command.OpenStore");
 
@@ -39,6 +39,7 @@ internal sealed partial class OpenCertificateCommand(CertificateEntry entry, boo
                     ElevatedCertificateLauncher.Start(entry, selectCertificate);
                 }
             }
+            onOpened?.Invoke();
             return CommandResult.Hide();
         }
         catch (Exception exception) when (exception is Win32Exception or InvalidOperationException or SecurityException)

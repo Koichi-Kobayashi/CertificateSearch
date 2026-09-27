@@ -37,9 +37,8 @@ Command Palette は Microsoft PowerToys に含まれる、キーボード中心�
 | :---: | :---: |
 | [<img src="docs/images/ja-JP/01-find-extension.png" alt="Command Palette で証明書検索を検索" width="460">](docs/images/ja-JP/01-find-extension.png) | [<img src="docs/images/ja-JP/02-certificate-list.png" alt="Command Palette で証明書の一覧を表示" width="460">](docs/images/ja-JP/02-certificate-list.png) |
 | **証明書を絞り込み** | **選択した証明書を開く** |
-| [<img src="docs/images/ja-JP/03-filter-certificates.png" alt="Command Palette で証明書を絞り込み" width="460">](docs/images/ja-JP/03-filter-certificates.png) | [<img src="docs/images/ja-JP/04-open-certificate.png" alt="Windows の証明書マネージャーで選択された証明書" width="460">](docs/images/ja-JP/04-open-certificate.png) |
+| [<img src="docs/images/ja-JP/03-filter-certificates.png" alt="Command Palette で証明書を絞り込み" width="460">](docs/images/ja-JP/03-filter-certificates.png) | [<img src="docs/images/ja-JP/04-open-certificate-properties.png" alt="Windows の証明書マネージャーで選択された証明書" width="460">](docs/images/ja-JP/04-open-certificate-properties.png) |
 
-画像4枚は後で追加する予定です。
 
 ## 動作要件
 

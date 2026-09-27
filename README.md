@@ -37,9 +37,8 @@ The extension reads certificate stores without changing certificates, trust sett
 | :---: | :---: |
 | [<img src="docs/images/en-US/01-find-extension.png" alt="Finding Certificate Search in Command Palette" width="460">](docs/images/en-US/01-find-extension.png) | [<img src="docs/images/en-US/02-certificate-list.png" alt="Browsing certificates in Command Palette" width="460">](docs/images/en-US/02-certificate-list.png) |
 | **Filter certificates** | **Open the selected certificate** |
-| [<img src="docs/images/en-US/03-filter-certificates.png" alt="Filtering certificates in Command Palette" width="460">](docs/images/en-US/03-filter-certificates.png) | [<img src="docs/images/en-US/04-open-certificate.png" alt="Selected certificate in Windows Certificate Manager" width="460">](docs/images/en-US/04-open-certificate.png) |
+| [<img src="docs/images/en-US/03-filter-certificates.png" alt="Filtering certificates in Command Palette" width="460">](docs/images/en-US/03-filter-certificates.png) | [<img src="docs/images/en-US/04-open-certificate-properties.png" alt="Selected certificate in Windows Certificate Manager" width="460">](docs/images/en-US/04-open-certificate-properties.png) |
 
-The four screenshots are planned and will be added later.
 
 ## Requirements
 

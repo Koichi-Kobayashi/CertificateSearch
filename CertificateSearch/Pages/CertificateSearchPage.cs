@@ -39,13 +39,15 @@ internal sealed partial class CertificateSearchPage : DynamicListPage
 
     public override IListItem[] GetItems()
     {
-        if (_index is null)
+        var index = _index;
+        if (index is null)
         {
+            Load();
             return [new ListItem(new NoOpCommand()) { Title = Strings.Get(_loading ? "Status.Loading" : "Status.NoCertificates") }];
         }
 
-        var matches = _index.Search(_query);
-        var results = matches.Take(200).Select(entry => CreateItem(entry, _index.CanMatchByVisibleMetadata(entry))).ToList();
+        var matches = index.Search(_query);
+        var results = matches.Take(200).Select(entry => CreateItem(entry, index.CanMatchByVisibleMetadata(entry))).ToList();
         if (results.Count == 0)
         {
             results.Add(new ListItem(new NoOpCommand()) { Title = Strings.Get("Status.NoMatches") });
@@ -87,7 +89,9 @@ internal sealed partial class CertificateSearchPage : DynamicListPage
         });
     }
 
-    private static ListItem CreateItem(CertificateEntry entry, bool allowMetadataMatch)
+    private void Invalidate() => _index = null;
+
+    private ListItem CreateItem(CertificateEntry entry, bool allowMetadataMatch)
     {
         var now = DateTime.Now;
         var location = $"{Strings.Get(entry.StoreLocation == StoreLocation.CurrentUser ? "Store.CurrentUser" : "Store.LocalMachine")} / {entry.StoreName}";
@@ -98,7 +102,7 @@ internal sealed partial class CertificateSearchPage : DynamicListPage
             "Expires soon" => Strings.Get("Validity.ExpiresSoon"),
             _ => Strings.Get("Validity.Valid"),
         };
-        return new ListItem(new OpenCertificateCommand(entry, true, allowMetadataMatch))
+        return new ListItem(new OpenCertificateCommand(entry, true, allowMetadataMatch, Invalidate))
         {
             Title = entry.DisplayName,
             Subtitle = $"{location} · {entry.Subject}",
@@ -110,7 +114,7 @@ internal sealed partial class CertificateSearchPage : DynamicListPage
             },
             MoreCommands =
             [
-                new CommandContextItem(new OpenCertificateCommand(entry, false)),
+                new CommandContextItem(new OpenCertificateCommand(entry, false, onOpened: Invalidate)),
                 new CommandContextItem(new CopyTextCommand(entry.Thumbprint) { Name = Strings.Get("Command.CopyThumbprint") }),
                 new CommandContextItem(new CopyTextCommand(entry.Subject) { Name = Strings.Get("Command.CopySubject") }),
                 new CommandContextItem(new CopyTextCommand(entry.Issuer) { Name = Strings.Get("Command.CopyIssuer") }),
